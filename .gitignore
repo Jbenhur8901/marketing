@@ -31,5 +31,6 @@ build/
 tmp/
 temp/
 
-API_DOCUMENTATION.md
-API_KEYS_GUIDE.md:
+# Test results and exports
+verification-results-*.csv
+*.csv
