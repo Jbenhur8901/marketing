@@ -1,0 +1,993 @@
+{
+  "info": {
+    "name": "WhatsApp Chatbot Platform API",
+    "description": "Complete API collection for WhatsApp chatbot platform with X-API-KEY authentication",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "apiKey",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "workspaceId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "API Keys Management",
+      "item": [
+        {
+          "name": "Create API Key",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.api_key) {",
+                  "  pm.collectionVariables.set('apiKey', response.api_key);",
+                  "  console.log('API Key saved to collection variable');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}",
+                "description": "Use existing API key or service role key"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"workspace_id\": \"{{workspaceId}}\",\n  \"name\": \"Production API Key\",\n  \"scopes\": [\"read\", \"write\"],\n  \"rate_limit_per_minute\": 60,\n  \"expires_at\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api-keys",
+              "host": ["{{baseUrl}}"],
+              "path": ["api-keys"]
+            },
+            "description": "Create a new API key for workspace authentication. Save the returned key securely - it's shown only once!"
+          }
+        },
+        {
+          "name": "List API Keys",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api-keys?workspace_id={{workspaceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api-keys"],
+              "query": [
+                {
+                  "key": "workspace_id",
+                  "value": "{{workspaceId}}"
+                }
+              ]
+            },
+            "description": "List all API keys for a workspace"
+          }
+        },
+        {
+          "name": "Get API Key Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api-keys/:keyId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api-keys", ":keyId"],
+              "variable": [
+                {
+                  "key": "keyId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update API Key",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated API Key Name\",\n  \"scopes\": [\"read\"],\n  \"rate_limit_per_minute\": 30\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api-keys/:keyId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api-keys", ":keyId"],
+              "variable": [
+                {
+                  "key": "keyId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Revoke API Key",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Security rotation\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api-keys/:keyId/revoke",
+              "host": ["{{baseUrl}}"],
+              "path": ["api-keys", ":keyId", "revoke"],
+              "variable": [
+                {
+                  "key": "keyId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get API Key Usage",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api-keys/:keyId/usage",
+              "host": ["{{baseUrl}}"],
+              "path": ["api-keys", ":keyId", "usage"],
+              "variable": [
+                {
+                  "key": "keyId",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Get usage statistics for an API key"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Workspaces",
+      "item": [
+        {
+          "name": "List Workspaces",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/workspaces",
+              "host": ["{{baseUrl}}"],
+              "path": ["workspaces"]
+            }
+          }
+        },
+        {
+          "name": "Create Workspace",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.workspace && response.workspace.id) {",
+                  "  pm.collectionVariables.set('workspaceId', response.workspace.id);",
+                  "  console.log('Workspace ID saved to collection variable');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"My Workspace\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/workspaces",
+              "host": ["{{baseUrl}}"],
+              "path": ["workspaces"]
+            }
+          }
+        },
+        {
+          "name": "Connect WhatsApp",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"whatsapp_business_account_id\": \"123456789\",\n  \"whatsapp_phone_number_id\": \"987654321\",\n  \"whatsapp_access_token\": \"EAAxxxx\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/workspaces/:workspaceId/connect-whatsapp",
+              "host": ["{{baseUrl}}"],
+              "path": ["workspaces", ":workspaceId", "connect-whatsapp"],
+              "variable": [
+                {
+                  "key": "workspaceId",
+                  "value": "{{workspaceId}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bots",
+      "item": [
+        {
+          "name": "List Bots",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bots?workspace_id={{workspaceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["bots"],
+              "query": [
+                {
+                  "key": "workspace_id",
+                  "value": "{{workspaceId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Bot",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"workspace_id\": \"{{workspaceId}}\",\n  \"name\": \"Customer Support Bot\",\n  \"description\": \"Handles customer inquiries\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bots",
+              "host": ["{{baseUrl}}"],
+              "path": ["bots"]
+            }
+          }
+        },
+        {
+          "name": "Update Flow",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"flow_json\": {\n    \"nodes\": [\n      {\n        \"id\": \"node_1\",\n        \"type\": \"trigger\",\n        \"data\": {\n          \"trigger_type\": \"keyword\",\n          \"keywords\": [\"hi\", \"hello\"]\n        }\n      },\n      {\n        \"id\": \"node_2\",\n        \"type\": \"send_message\",\n        \"data\": {\n          \"message\": \"Hello! How can I help you?\"\n        }\n      }\n    ],\n    \"edges\": [\n      {\"source\": \"node_1\", \"target\": \"node_2\"}\n    ]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bots/:botId/flow",
+              "host": ["{{baseUrl}}"],
+              "path": ["bots", ":botId", "flow"],
+              "variable": [
+                {
+                  "key": "botId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Activate Bot",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bots/:botId/activate",
+              "host": ["{{baseUrl}}"],
+              "path": ["bots", ":botId", "activate"],
+              "variable": [
+                {
+                  "key": "botId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Contacts",
+      "item": [
+        {
+          "name": "List Contacts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/contacts?workspace_id={{workspaceId}}&page=1&limit=50",
+              "host": ["{{baseUrl}}"],
+              "path": ["contacts"],
+              "query": [
+                {
+                  "key": "workspace_id",
+                  "value": "{{workspaceId}}"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Contact",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"workspace_id\": \"{{workspaceId}}\",\n  \"phone\": \"+33612345678\",\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"tags\": [\"customer\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/contacts",
+              "host": ["{{baseUrl}}"],
+              "path": ["contacts"]
+            }
+          }
+        },
+        {
+          "name": "Import Contacts",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"workspace_id\": \"{{workspaceId}}\",\n  \"contacts\": [\n    {\n      \"phone\": \"+33612345678\",\n      \"name\": \"John Doe\",\n      \"tags\": [\"customer\"]\n    },\n    {\n      \"phone\": \"+33698765432\",\n      \"name\": \"Jane Smith\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/contacts/import",
+              "host": ["{{baseUrl}}"],
+              "path": ["contacts", "import"]
+            }
+          }
+        },
+        {
+          "name": "Export Contacts CSV",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/contacts/export?workspace_id={{workspaceId}}&format=csv",
+              "host": ["{{baseUrl}}"],
+              "path": ["contacts", "export"],
+              "query": [
+                {
+                  "key": "workspace_id",
+                  "value": "{{workspaceId}}"
+                },
+                {
+                  "key": "format",
+                  "value": "csv"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Conversations",
+      "item": [
+        {
+          "name": "List Conversations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/conversations?workspace_id={{workspaceId}}&status=bot",
+              "host": ["{{baseUrl}}"],
+              "path": ["conversations"],
+              "query": [
+                {
+                  "key": "workspace_id",
+                  "value": "{{workspaceId}}"
+                },
+                {
+                  "key": "status",
+                  "value": "bot"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Conversation",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/conversations/:conversationId",
+              "host": ["{{baseUrl}}"],
+              "path": ["conversations", ":conversationId"],
+              "variable": [
+                {
+                  "key": "conversationId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Thank you for contacting us!\",\n  \"type\": \"text\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/conversations/:conversationId/messages",
+              "host": ["{{baseUrl}}"],
+              "path": ["conversations", ":conversationId", "messages"],
+              "variable": [
+                {
+                  "key": "conversationId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Take Over Conversation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/conversations/:conversationId/takeover",
+              "host": ["{{baseUrl}}"],
+              "path": ["conversations", ":conversationId", "takeover"],
+              "variable": [
+                {
+                  "key": "conversationId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bulk Verification",
+      "item": [
+        {
+          "name": "Start Verification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"workspace_id\": \"{{workspaceId}}\",\n  \"phone_numbers\": [\n    \"+33612345678\",\n    \"+33698765432\"\n  ],\n  \"auto_add_to_contacts\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bulk-verification/start",
+              "host": ["{{baseUrl}}"],
+              "path": ["bulk-verification", "start"]
+            }
+          }
+        },
+        {
+          "name": "Get Job Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bulk-verification/:jobId",
+              "host": ["{{baseUrl}}"],
+              "path": ["bulk-verification", ":jobId"],
+              "variable": [
+                {
+                  "key": "jobId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Results",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bulk-verification/:jobId/results?page=1&limit=50",
+              "host": ["{{baseUrl}}"],
+              "path": ["bulk-verification", ":jobId", "results"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "jobId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Broadcasts",
+      "item": [
+        {
+          "name": "Create Template",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"workspace_id\": \"{{workspaceId}}\",\n  \"name\": \"Welcome Template\",\n  \"content\": \"Hello {{name}}, welcome to our service!\",\n  \"variables\": [\"name\"],\n  \"category\": \"MARKETING\",\n  \"language\": \"en\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/broadcast-templates",
+              "host": ["{{baseUrl}}"],
+              "path": ["broadcast-templates"]
+            }
+          }
+        },
+        {
+          "name": "Create Campaign",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"workspace_id\": \"{{workspaceId}}\",\n  \"name\": \"New Year Campaign\",\n  \"message_content\": \"Happy New Year {{name}}!\",\n  \"target_type\": \"all\",\n  \"rate_limit\": 10\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/broadcasts",
+              "host": ["{{baseUrl}}"],
+              "path": ["broadcasts"]
+            }
+          }
+        },
+        {
+          "name": "Get Campaign Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/broadcasts/:campaignId",
+              "host": ["{{baseUrl}}"],
+              "path": ["broadcasts", ":campaignId"],
+              "variable": [
+                {
+                  "key": "campaignId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Pause Campaign",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/broadcasts/:campaignId/pause",
+              "host": ["{{baseUrl}}"],
+              "path": ["broadcasts", ":campaignId", "pause"],
+              "variable": [
+                {
+                  "key": "campaignId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Resume Campaign",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/broadcasts/:campaignId/resume",
+              "host": ["{{baseUrl}}"],
+              "path": ["broadcasts", ":campaignId", "resume"],
+              "variable": [
+                {
+                  "key": "campaignId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cancel Campaign",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/broadcasts/:campaignId/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["broadcasts", ":campaignId", "cancel"],
+              "variable": [
+                {
+                  "key": "campaignId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Overview",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/analytics/overview?workspace_id={{workspaceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "overview"],
+              "query": [
+                {
+                  "key": "workspace_id",
+                  "value": "{{workspaceId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Conversation Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/analytics/conversations?workspace_id={{workspaceId}}&period=7d",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "conversations"],
+              "query": [
+                {
+                  "key": "workspace_id",
+                  "value": "{{workspaceId}}"
+                },
+                {
+                  "key": "period",
+                  "value": "7d"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Broadcast Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/analytics/broadcasts?workspace_id={{workspaceId}}&period=30d",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "broadcasts"],
+              "query": [
+                {
+                  "key": "workspace_id",
+                  "value": "{{workspaceId}}"
+                },
+                {
+                  "key": "period",
+                  "value": "30d"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Monitoring",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/monitoring/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["monitoring", "health"]
+            },
+            "description": "No authentication required"
+          }
+        },
+        {
+          "name": "Dead Letter Queue Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/monitoring/dlq",
+              "host": ["{{baseUrl}}"],
+              "path": ["monitoring", "dlq"]
+            }
+          }
+        },
+        {
+          "name": "System Metrics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-KEY",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/monitoring/metrics",
+              "host": ["{{baseUrl}}"],
+              "path": ["monitoring", "metrics"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
